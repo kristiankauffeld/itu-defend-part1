@@ -1,4 +1,4 @@
-import json, sqlite3, click, functools, os, hashlib,time
+import json, sqlite3, click, functools, os, hashlib,time, random
 from flask import Flask, current_app, g, session, redirect, render_template, url_for, request
 
 
@@ -22,7 +22,8 @@ CREATE TABLE notes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     assocUser INTEGER NOT NULL,
     dateWritten DATETIME NOT NULL,
-    note TEXT NOT NULL
+    note TEXT NOT NULL,
+    publicID INTEGER NOT NULL
 );
 
 CREATE TABLE users (
@@ -33,8 +34,8 @@ CREATE TABLE users (
 
 INSERT INTO users VALUES(null,"admin", "password");
 INSERT INTO users VALUES(null,"bernardo", "omgMPC");
-INSERT INTO notes VALUES(null,2,"1993-09-23 10:10:10","hello my friend");
-INSERT INTO notes VALUES(null,2,"1993-09-23 12:10:10","i want lunch pls");
+INSERT INTO notes VALUES(null,2,"1993-09-23 10:10:10","hello my friend",1234567890);
+INSERT INTO notes VALUES(null,2,"1993-09-23 12:10:10","i want lunch pls",1234567891);
 
 """)
 
@@ -65,15 +66,35 @@ def index():
 @app.route("/notes/", methods=('GET', 'POST'))
 @login_required
 def notes():
+    importerror=""
+    #Posting a new note:
     if request.method == 'POST':
-        note = request.form['noteinput']
-        db = connect_db()
-        c = db.cursor()
-        statement = """INSERT INTO notes(id,assocUser,dateWritten,note) VALUES(null,%s,'%s','%s');""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note)
-        print(statement)
-        c.execute(statement)
-        db.commit()
-        db.close()
+        if request.form['submit_button'] == 'addnote':
+            note = request.form['noteinput']
+            db = connect_db()
+            c = db.cursor()
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
+            print(statement)
+            c.execute(statement)
+            db.commit()
+            db.close()
+        elif request.form['submit_button'] == 'importnote':
+            noteid = request.form['noteid']
+            db = connect_db()
+            c = db.cursor()
+            statement = """SELECT * from NOTES where publicID = %s""" %noteid
+            c.execute(statement)
+            result = c.fetchall()
+            if(len(result)>0):
+                row = result[0]
+                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
+                c.execute(statement)
+            else:
+                importerror="No such note with that ID!"
+            db.commit()
+            db.close()
+
+    
     db = connect_db()
     c = db.cursor()
     statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
@@ -81,7 +102,8 @@ def notes():
     c.execute(statement)
     notes = c.fetchall()
     print(notes)
-    return render_template('notes.html',notes=notes)
+    
+    return render_template('notes.html',notes=notes,importerror=importerror)
 
 
 @app.route("/login/", methods=('GET', 'POST'))
@@ -95,6 +117,7 @@ def login():
         statement = "SELECT * FROM users WHERE username = '%s' AND password = '%s';" %(username, password)
         c.execute(statement)
         result = c.fetchall()
+
         if len(result) > 0:
             session.clear()
             session['logged_in'] = True
@@ -132,6 +155,7 @@ def register():
 
         if(not errored):
             statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
+            print(statement)
             c.execute(statement)
             db.commit()
             db.close()
@@ -147,10 +171,6 @@ def register():
         
         db.commit()
         db.close()
-        
-        
-
-    
     return render_template('register.html',usererror=usererror,passworderror=passworderror)
 
 

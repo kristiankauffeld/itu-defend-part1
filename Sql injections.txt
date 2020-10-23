@@ -1,0 +1,3 @@
+Chose any id number for your note:
+message', 123); -- -
+'+(SELECT * FROM users WHERE username="bernardo")'
