@@ -1,4 +1,4 @@
-import json, sqlite3, click, functools, os, hashlib
+import json, sqlite3, click, functools, os, hashlib,time
 from flask import Flask, current_app, g, session, redirect, render_template, url_for, request
 
 
@@ -14,6 +14,7 @@ def init_db():
     conn = connect_db()
     db = conn.cursor()
     db.executescript("""
+
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS notes;
 
@@ -32,6 +33,9 @@ CREATE TABLE users (
 
 INSERT INTO users VALUES(null,"admin", "password");
 INSERT INTO users VALUES(null,"bernardo", "omgMPC");
+INSERT INTO notes VALUES(null,2,"1993-09-23 10:10:10","hello my friend");
+INSERT INTO notes VALUES(null,2,"1993-09-23 12:10:10","i want lunch pls");
+
 """)
 
 
@@ -52,35 +56,31 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
-@app.route("/")
+@app.route("/", methods=('GET', 'POST'))
 @login_required
 def index():
-     return f"""<!DOCTYPE html>
-<html>
-    <head><title>CoviDIoT - Overview </title></head>
-    <body><h1>CoviDIoT - Overview</h1>
-    <h1>Hello to you {f''+session['username']}</h1>
-        <h2>Notes list:</h2>
-        <table>
-        <tr><th>Device ID</th><th>Key</th><th>Registration date</th><th>Firmware ID</th></tr>
-        </table>
-        <h2>Maybe infected:</h2>
-        <table>
-        <tr><th>Device ID</th><th>Proximity</th><th>Time exposed</th></tr>
-        </table>
-        <h2>Upload new firmware:</h2>
-        <form method=POST action=/upload_firmware/ enctype=multipart/form-data>
-        <input type=text name=code/>
-        <button type=submit value=Upload/>
-        </form>
-        <div><a href="/logout/">Logout</a>
-    </body>
-</html>"""
+    if request.method == 'POST':
+        note = request.form['noteinput']
+        db = connect_db()
+        c = db.cursor()
+        statement = """INSERT INTO notes(id,assocUser,dateWritten,note) VALUES(null,%s,'%s','%s');""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note)
+        print(statement)
+        c.execute(statement)
+        db.commit()
+        db.close()
+    db = connect_db()
+    c = db.cursor()
+    statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
+    print(statement)
+    c.execute(statement)
+    notes = c.fetchall()
+    print(notes)
+    return render_template('index.html',notes=notes)
 
 
 @app.route("/login/", methods=('GET', 'POST'))
 def login():
-    message = ""
+    error = ""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -96,20 +96,57 @@ def login():
             session['username']=result[0][1]
             return redirect(url_for('index'))
         else:
-            message = "Wrong username or password!"
-    return f"""<!DOCTYPE html>
-<html>
-    <head><title>CoviDIoT - Login </title></head>
-    <body>
-        <h1>CoviDIoT - Login</h1>
-        {message}
-        <form method=POST>
-            Username: <input type="text" name="username"/><br/>
-            Password: <input type="password" name="password"/><br/>
-            <button>Login</button>
-        </form>
-    </body>
-</html>"""
+            error = "Wrong username or password!"
+    return render_template('login.html',error=error)
+
+
+@app.route("/register/", methods=('GET', 'POST'))
+def register():
+    errored = False
+    usererror = ""
+    passworderror = ""
+    if request.method == 'POST':
+        
+
+        username = request.form['username']
+        password = request.form['password']
+        db = connect_db()
+        c = db.cursor()
+        pass_statement = """SELECT * FROM users WHERE password = '%s';""" %password
+        user_statement = """SELECT * FROM users WHERE username = '%s';""" %username
+        c.execute(pass_statement)
+        if(len(c.fetchall())>0):
+            errored = True
+            passworderror = "That password is already in use by someone else!"
+
+        c.execute(user_statement)
+        if(len(c.fetchall())>0):
+            errored = True
+            usererror = "That username is already in use by someone else!"
+
+        if(not errored):
+            statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
+            c.execute(statement)
+            db.commit()
+            db.close()
+            return f"""<html>
+                        <head>
+                            <meta http-equiv="refresh" content="2;url=/" />
+                        </head>
+                        <body>
+                            <h1>SUCCESS!!! Redirecting in 2 seconds...</h1>
+                        </body>
+                        </html>
+                        """
+        
+        db.commit()
+        db.close()
+        
+        
+
+    
+    return render_template('register.html',usererror=usererror,passworderror=passworderror)
+
 
 @app.route("/logout/")
 @login_required
