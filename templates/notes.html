@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Note Overview </title>
+    </head>
+    <body><h1>Welcome {{session['username']}}</h1>
+        <h2>Here are your notes:</h2>
+        <ul class="list-unstyled notes">
+            {% for note in notes %}
+              {% include "note.html" %}
+            {% endfor %}
+        </ul>
+        <form action="" method="post">
+            <label for="note">New note:</label><br>
+            <input type="text" name="noteinput",value={{ request.form.noteinput }}><br>
+            <input type="submit" value="Submit">
+        </form> 
+         
+         
+        <div><a href="/logout/">Logout</a></div>
+    </body>
+
+</html>

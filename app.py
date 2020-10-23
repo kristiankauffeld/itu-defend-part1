@@ -47,8 +47,6 @@ app.secret_key = os.getrandom(32)
 
 ### ADMINISTRATOR'S PANEL ###
 def login_required(view):
-    """Checks that the administrator has logged in, if so it returns the requested view, otherwise
-    redirects to the login page"""
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if not session.get('logged_in'):
@@ -56,9 +54,17 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
-@app.route("/", methods=('GET', 'POST'))
-@login_required
+@app.route("/")
 def index():
+    if not session.get('logged_in'):
+        return render_template('index.html')
+    else:
+        return redirect(url_for('notes'))
+
+
+@app.route("/notes/", methods=('GET', 'POST'))
+@login_required
+def notes():
     if request.method == 'POST':
         note = request.form['noteinput']
         db = connect_db()
@@ -75,7 +81,7 @@ def index():
     c.execute(statement)
     notes = c.fetchall()
     print(notes)
-    return render_template('index.html',notes=notes)
+    return render_template('notes.html',notes=notes)
 
 
 @app.route("/login/", methods=('GET', 'POST'))
