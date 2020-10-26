@@ -108,14 +108,14 @@ ul li:nth-child(5n) a{
         <br>
         <form action="" method="post" >
             <label for="note">New note:</label><br>
-            <textarea name="noteinput" class=textfield value={{ request.form.noteinput }}>>Enter text here...</textarea><br>
-            <input type="submit" name="submit_button" value="addnote">
+            <textarea name="noteinput" placeholder=">Enter text here..." class=textfield value={{ request.form.noteinput }}></textarea><br>
+            <input type="submit" name="submit_button" value="add note">
         </form> 
         <br>
         <form action="" method="post" >
             <label for="note">Import a note from someone else:</label><br>
             <input type="text" placeholder="XXXXXXXXXX" name="noteid" value={{request.form.noteid}}>
-            <input type="submit" name="submit_button" value="importnote">
+            <input type="submit" name="submit_button" value="import note">
         </form> 
         {% if importerror %}
               <p class="p-large"><strong>Error:</strong> {{ importerror }}

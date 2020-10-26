@@ -69,7 +69,7 @@ def notes():
     importerror=""
     #Posting a new note:
     if request.method == 'POST':
-        if request.form['submit_button'] == 'addnote':
+        if request.form['submit_button'] == 'add note':
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
@@ -78,7 +78,7 @@ def notes():
             c.execute(statement)
             db.commit()
             db.close()
-        elif request.form['submit_button'] == 'importnote':
+        elif request.form['submit_button'] == 'import note':
             noteid = request.form['noteid']
             db = connect_db()
             c = db.cursor()
