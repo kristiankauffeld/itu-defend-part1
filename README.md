@@ -12,7 +12,9 @@ $ git clone https://github.com/0xlimE/MySecretNotes.git
 $ cd MySecretNotes 
 $ sudo apt-get install python3-pip 
 $ pip3 install flask
-$ python3 app.py ``` 
+$ python3 app.py 
+``` 
+
 The project should run on port 5000 
 ### Credits
 Alessandro Bruni for some flask specific functions.
