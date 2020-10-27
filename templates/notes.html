@@ -13,7 +13,7 @@ body{
   font-family:arial,sans-serif;
   font-size:100%;
   margin:3em;
-  background:#666;
+  background-color:#fff;
   color:#fff;
 }
 h2,p{
@@ -25,7 +25,10 @@ ul,li{
 }
 ul{
   overflow:hidden;
-  padding:3em;
+  padding:0;
+}
+p, label{
+  color: #113448;
 }
 ul li a{
   text-decoration:none;
@@ -34,7 +37,7 @@ ul li a{
   display:block;
   height:18em;
   width:18em;
-  padding:1em;
+  padding:0;
   /* Firefox */
   -moz-box-shadow:5px 5px 7px rgba(33,33,33,1);
   /* Safari+Chrome */
@@ -55,7 +58,6 @@ ul li h2{
 ul li h3{
   font-size:100%;
   font-style:italic;
-  padding-bottom:10px;
   color: grey;
 }
 ul li p{
@@ -87,42 +89,216 @@ ul li:nth-child(5n) a{
   top:-10px;
 }
 
+ol, ul, dl {
+  margin-bottom: 0!important;
+}
+
 .textfield {
-    width: 30%;
-    height: 40px;
+  width: 100%;
+  max-width: 250px!important;
+  height: 50px;
+  margin-bottom: -24px;
+}
+
+.notes__background-image {
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('/static/images/header-background.jpg') center center no-repeat;
+  background-size: cover;
+  background-position-y: 0%;
+  height: 250px;
+}
+
+.notes__body-content {
+  background-color: #fff;
+  padding: 0 200px;
+}
+
+.notes__body-top-padding {
+  padding-top: 140px;
+}
+
+.notes__body-bottom-padding {
+  padding-bottom: 100px;
+}
+
+.notes__body-top-border {
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 1px solid #14bf98;
+}
+
+.notes__logout {
+  position: absolute;
+  right: 50px;
+  top: 30px;
+}
+
+.notes__title-user {
+  color: #14bf98;
+  text-transform: capitalize;
+  margin-left: 25px;
+  position: absolute;
+  top: 263px;
+  left: 221px;
+}
+
+.notes__title {
+  color: #fff;
+  font-size: 5.5rem;
+  position: absolute;
+  top: 197px;
+  width: 100%;
+  left: 200px;
+}
+
+.notes__text {
+  margin-left: 0;
+  margin-bottom: 5px;
+  color: #113448;
+}
+
+.notes__item-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 0;
+  margin: 0 -15px;
+}
+
+.card-delete-button {
+  position: absolute;
+  bottom: 20px;
+}
+
+.notes__card-body {
+  padding-bottom: 50px!important;
+}
+
+.notes__card-wrapper {
+  width: calc((100%/3) - 32px);
+}
+
+@media screen and (max-width: 1000px){
+  .notes__card-wrapper {
+    width: calc((100%/2) - 32px);
+  }
+}
+
+@media screen and (max-width: 700px){
+  .notes__card-wrapper {
+    width: calc(100%/1);
+  }
+}
+
+.notes__input-wrapper {
+  margin-bottom: 30px;
+}
+
+.notes__input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.notes__input-container label {
+  font-size: 14px;
+}
+
+.notes__input-wrapper input {
+  height: 100%;
+  width: 100%;
+  max-width: 250px;
+}
+
+.notes__input-margin-top {
+  margin-top: 14px;
+}
+
+.card {
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+  transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
+  padding: 10px;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.025);
+  box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+}
+
+.notes__card-title {
+  color: #113448;
+}
+
+.notes__card-subtitle {
+  font-size: 12px;
+  line-height: 1.4;
+  color: silver;
+  font-weight: 400;
+}
+
+.notes__card-subtitle--date {
+  font-weight: 700;
+  color:#14bf98
 }
 
     </style>
     
     <head>
         <title>Note Overview </title>
+
+        <!-- Styles -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
+        <link href={{ url_for('static',filename='css/bootstrap.css') }} rel="stylesheet">
+        <link href={{ url_for('static',filename='css/fontawesome-all.css') }} rel="stylesheet">
+        <link href={{ url_for('static',filename='css/swiper.css') }} rel="stylesheet">
+        <link href={{ url_for('static',filename='css/magnific-popup.css') }} rel="stylesheet">
+        <link href={{ url_for('static',filename='css/styles.css') }} rel="stylesheet">
     </head>
-    <body><h1>Welcome {{session['username']}}</h1>
-        <div><a href="/logout/" class="btn-solid-lg">Logout</a></div>
-        <h2>Here are your notes:, you can share your notes by sharing your public id</h2>
-        <ul>
+
+
+    <body style="background-color:#fff;">
+      <section class="notes__background-image">
+        <a href="/logout/" class="notes__logout btn-solid-lg">Logout</a>
+        <article class="notes__background-title-container">
+          <h1 class="notes__title">Welcome</h1>
+          <h2 class="notes__title-user">{{session['username']}}</h2>
+        </article>
+      </section>
+      <section class="notes__body-content notes__body-top-padding">
+        <p class="notes__text">Here are your notes:, you can share your notes by sharing your public id</p>
+        <ul class="notes__item-container">
             {% for note in notes %}
               {% include "note.html" %}
             {% endfor %}
         </ul>
-        <br>
-        <form action="" method="post" >
-            <label for="note">New note:</label><br>
-            <textarea name="noteinput" placeholder=">Enter text here..." class=textfield value={{ request.form.noteinput }}></textarea><br>
-            <input type="submit" name="submit_button" value="add note">
+      </section>
+      <section class="notes__body-content notes__body-bottom-padding">
+        <div class="notes__body-top-border"></div>
+        <form action="" method="post" class="notes__input-wrapper">
+            <div class="notes__input-container">
+              <label for="note">New note:</label>
+              <textarea name="noteinput" placeholder=">Enter text here..." class="textfield form-control" value={{ request.form.noteinput }}></textarea><br>
+            </div>
+            <input class="btn-solid-lg notes__input-margin-top" type="submit" value="Add note">
         </form> 
-        <br>
-        <form action="" method="post" >
-            <label for="note">Import a note from someone else:</label><br>
-            <input type="text" placeholder="XXXXXXXXXX" name="noteid" value={{request.form.noteid}}>
-            <input type="submit" name="submit_button" value="import note">
+        
+        <form action="" method="post" class="notes__input-wrapper">
+            <div class="notes__input-container">
+              <label for="note">Import a note from someone else:</label>
+              <input class="form-control notes__input__no-margin" type="text" placeholder="XXXXXXXXXX" name="noteid" value={{request.form.noteid}}>
+            </div>
+            <input class="btn-solid-lg notes__input-margin-top" type="submit" name="submit_button" value="import note">
         </form> 
         {% if importerror %}
               <p class="p-large"><strong>Error:</strong> {{ importerror }}
         {% endif %}
-
-         
-        
+      </section>     
+      
+      <!-- Scripts -->
+    <script src={{ url_for('static',filename='js/jquery.min.js') }}></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
+    <script src={{ url_for('static',filename='js/popper.min.js') }}></script> <!-- Popper tooltip library for Bootstrap -->
+    <script src={{ url_for('static',filename='js/bootstrap.min.js') }}></script> <!-- Bootstrap framework -->
     </body>
 
 </html>

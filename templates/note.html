@@ -1,8 +1,21 @@
-  </style>
+  <!-- 
+
+    OLD STYLE CARDS 
+
   <li>
     <a>
       <h2>Public Note ID: {{note[4]}}</h2>
       <h3>note written on: {{ note[2] }}</h3>
       <p>{{ note[3] }}</p>
     </a>
+  </li>
+ -->
+
+  <li class="card notes__card-wrapper">
+    <div class="card-body notes__card-body">
+      <h5 class="card-title notes__card-title">Public Note ID: {{note[4]}}</h5>
+      <h6 class="card-subtitle mb-2 notes__card-subtitle">note written on: <span class="notes__card-subtitle--date ">{{ note[2] }}</span></h6>
+      <p class="card-text">{{ note[3] }}</p>
+      <button href="#" class="card-link card-delete-button btn-outline-sm">Delete</button>
+    </div>
   </li>

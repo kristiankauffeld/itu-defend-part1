@@ -44,7 +44,7 @@ INSERT INTO notes VALUES(null,2,"1993-09-23 12:10:10","i want lunch pls",1234567
 ### APPLICATION SETUP ###
 app = Flask(__name__)
 app.database = "db.sqlite3"
-app.secret_key = os.getrandom(32)
+app.secret_key = os.urandom(32)
 
 ### ADMINISTRATOR'S PANEL ###
 def login_required(view):
