@@ -93,7 +93,6 @@ def notes():
                 importerror="No such note with that ID!"
             db.commit()
             db.close()
-
     
     db = connect_db()
     c = db.cursor()
