@@ -18,5 +18,7 @@ $ python3 app.py
 The project should run on port 5000 
 ### Credits
 Alessandro Bruni for some flask specific functions.
+
 This site for the template: https://onepagelove.com/aria
+
 Emil Kristoffersen for styling notes.html and note.html
