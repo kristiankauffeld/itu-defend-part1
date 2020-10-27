@@ -6,9 +6,14 @@ from the public note id. This site is all fine and dandy on the surface, but it 
 if you can find all the injection points. I can promise you that you are able to: * bypass login * Steal other 
 users passwords * Steal other users notes * Write notes on behalf of other users * and much more...
 ### Installation
-You will need python 3 and flask. To install do: ```sh $ git clone https://github.com/0xlimE/MySecretNotes.git $ 
-cd MySecretNotes $ sudo python3 -m pip install flask $ python3 app.py ``` The project should run on port 5000 
-```sh $ npm install --production $ NODE_ENV=production node app ```
+You will need python 3 and flask. To install do: 
+```sh 
+$ git clone https://github.com/0xlimE/MySecretNotes.git 
+$ cd MySecretNotes 
+$ sudo apt-get install python3-pip 
+$ pip3 install flask
+$ python3 app.py ``` 
+The project should run on port 5000 
 ### Credits
 Alessandro Bruni for some flask specific functions.
 This site for the template: https://onepagelove.com/aria
