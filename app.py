@@ -100,7 +100,7 @@ def notes():
     db = connect_db()
     c = db.cursor()
     #statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
-    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;"{'session['userid']': session['userid']}
+    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;", {'session['userid']': session['userid']}
     print(statement)
     c.execute(statement)
     notes = c.fetchall()
@@ -118,7 +118,7 @@ def login():
         db = connect_db()
         c = db.cursor()
         #statement = "SELECT * FROM users WHERE username = '%s' AND password = '%s';" %(username, password)
-        statement = "SELECT * FROM users WHERE username = %(username)s AND password = %(password)s;"{'username': username, 'password': password}
+        statement = "SELECT * FROM users WHERE username = %(username)s AND password = %(password)s;", {'username': username, 'password': password}
         c.execute(statement)
         result = c.fetchall()
 
@@ -146,9 +146,9 @@ def register():
         db = connect_db()
         c = db.cursor()
         #pass_statement = """SELECT * FROM users WHERE password = '%s';""" %password
-        pass_statement = """SELECT * FROM users WHERE password = %(password)s;"""{'password': password}
+        pass_statement = """SELECT * FROM users WHERE password = %(password)s;""", {'password': password}
         #user_statement = """SELECT * FROM users WHERE username = '%s';""" %username
-        user_statement = """SELECT * FROM users WHERE username = %(username)s;"""{'username': username}
+        user_statement = """SELECT * FROM users WHERE username = %(username)s;""", {'username': username}
         c.execute(pass_statement)
         if(len(c.fetchall())>0):
             errored = True
