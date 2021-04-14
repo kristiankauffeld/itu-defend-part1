@@ -2,6 +2,9 @@ import json, sqlite3, click, functools, os, hashlib,time, random, sys
 from flask import Flask, current_app, g, session, redirect, render_template, url_for, request
 
 
+#TODO No internal server errors plz
+#TODO Move tuples down into execution func
+#TODO change %(x)s -> :x
 
 
 ### DATABASE FUNCTIONS ###
@@ -40,7 +43,6 @@ INSERT INTO notes VALUES(null,2,"1993-09-23 12:10:10","i want lunch pls",1234567
 """)
 
 
-
 ### APPLICATION SETUP ###
 app = Flask(__name__)
 app.database = "db.sqlite3"
@@ -74,7 +76,7 @@ def notes():
             db = connect_db()
             c = db.cursor()
             statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
+            #TODO get this to work -> statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
             print(statement)
             c.execute(statement)
             db.commit()
@@ -90,7 +92,7 @@ def notes():
             if(len(result)>0):
                 row = result[0]
                 statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
-                #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
+                ##TODO get this to work -> statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
                 c.execute(statement)
             else:
                 importerror="No such note with that ID!"
@@ -100,9 +102,9 @@ def notes():
     db = connect_db()
     c = db.cursor()
     #statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
-    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;", {"session['userid']": session['userid']}
+    statement = "SELECT * FROM notes WHERE assocUser = :id;"
     print(statement)
-    c.execute(statement)
+    c.execute(statement, {"""id""": session['userid']})
     notes = c.fetchall()
     print(notes)
     
@@ -118,8 +120,8 @@ def login():
         db = connect_db()
         c = db.cursor()
         #statement = "SELECT * FROM users WHERE username = '%s' AND password = '%s';" %(username, password)
-        statement = "SELECT * FROM users WHERE username = %(username)s AND password = %(password)s;", {'username': username, 'password': password}
-        c.execute(statement)
+        statement = """SELECT * FROM users WHERE username = :username AND password = :password"""
+        c.execute(statement, {'username': username, 'password': password})
         result = c.fetchall()
 
         if len(result) > 0:
@@ -161,7 +163,7 @@ def register():
 
         if(not errored):
             statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
-            #statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
+            ##TODO get this to work -> statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
             print(statement)
             c.execute(statement)
             db.commit()
