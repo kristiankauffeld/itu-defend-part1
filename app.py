@@ -84,7 +84,7 @@ def notes():
             db = connect_db()
             c = db.cursor()
             #statement = """SELECT * from NOTES where publicID = %s""" %noteid
-            statement = """SELECT * from NOTES where publicID = %(publicID)s""", {'noteid': noteid}
+            statement = """SELECT * from NOTES where publicID = %(publicID)s""", {"noteid": noteid}
             c.execute(statement)
             result = c.fetchall()
             if(len(result)>0):
@@ -100,7 +100,7 @@ def notes():
     db = connect_db()
     c = db.cursor()
     #statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
-    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;", {'session['userid']': session['userid']}
+    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;", {"session['userid']": session['userid']}
     print(statement)
     c.execute(statement)
     notes = c.fetchall()
