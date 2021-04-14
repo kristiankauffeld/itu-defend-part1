@@ -73,8 +73,8 @@ def notes():
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
-            #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
+            #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
             print(statement)
             c.execute(statement)
             db.commit()
@@ -89,8 +89,8 @@ def notes():
             result = c.fetchall()
             if(len(result)>0):
                 row = result[0]
-                #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
-                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
+                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
+                #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
                 c.execute(statement)
             else:
                 importerror="No such note with that ID!"
@@ -160,8 +160,8 @@ def register():
             usererror = "That username is already in use by someone else!"
 
         if(not errored):
-            #statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
-            statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
+            statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
+            #statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
             print(statement)
             c.execute(statement)
             db.commit()
