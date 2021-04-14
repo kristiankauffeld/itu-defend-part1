@@ -74,13 +74,7 @@ def notes():
             db = connect_db()
             c = db.cursor()
             #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s, %(dateWritten)s, %(note)s, %(publicID)s);""", 
-                {
-                    'session['userid']': session['userid'],
-                    'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'),
-                    'note': note,
-                    'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)
-                }
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
             print(statement)
             c.execute(statement)
             db.commit()
@@ -90,19 +84,13 @@ def notes():
             db = connect_db()
             c = db.cursor()
             #statement = """SELECT * from NOTES where publicID = %s""" %noteid
-            statement = """SELECT * from NOTES where publicID = %(publicID)s""",
-                {
-                    'noteid': noteid
-                }
+            statement = """SELECT * from NOTES where publicID = %(publicID)s""", {'noteid': noteid}
             c.execute(statement)
             result = c.fetchall()
             if(len(result)>0):
                 row = result[0]
                 #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
-                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s, %(dateWritten)s, %(note)s, %(publicID)s);""",
-                {
-                    'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]
-                }
+                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
                 c.execute(statement)
             else:
                 importerror="No such note with that ID!"
@@ -112,10 +100,7 @@ def notes():
     db = connect_db()
     c = db.cursor()
     #statement = "SELECT * FROM notes WHERE assocUser = %s;" %session['userid']
-    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;"
-        {
-            'session['userid']': session['userid']
-        }
+    statement = "SELECT * FROM notes WHERE assocUser = %(assocUser)s;"{'session['userid']': session['userid']}
     print(statement)
     c.execute(statement)
     notes = c.fetchall()
@@ -133,10 +118,7 @@ def login():
         db = connect_db()
         c = db.cursor()
         #statement = "SELECT * FROM users WHERE username = '%s' AND password = '%s';" %(username, password)
-        statement = "SELECT * FROM users WHERE username = %(username)s AND password = %(password)s;"
-            {
-                'username': username, 'password': password
-            }
+        statement = "SELECT * FROM users WHERE username = %(username)s AND password = %(password)s;"{'username': username, 'password': password}
         c.execute(statement)
         result = c.fetchall()
 
@@ -164,15 +146,9 @@ def register():
         db = connect_db()
         c = db.cursor()
         #pass_statement = """SELECT * FROM users WHERE password = '%s';""" %password
-        pass_statement = """SELECT * FROM users WHERE password = %(password)s;"""
-            {
-                'password': password
-            }
+        pass_statement = """SELECT * FROM users WHERE password = %(password)s;"""{'password': password}
         #user_statement = """SELECT * FROM users WHERE username = '%s';""" %username
-        user_statement = """SELECT * FROM users WHERE username = %(username)s;"""
-            {
-                'username': username
-            }
+        user_statement = """SELECT * FROM users WHERE username = %(username)s;"""{'username': username}
         c.execute(pass_statement)
         if(len(c.fetchall())>0):
             errored = True
@@ -185,11 +161,7 @@ def register():
 
         if(not errored):
             #statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
-            statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s, %(password)s);"""
-                {
-                    'username': username,
-                    'password': password
-                }
+            statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
             print(statement)
             c.execute(statement)
             db.commit()
