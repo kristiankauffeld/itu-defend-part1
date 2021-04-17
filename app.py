@@ -75,10 +75,11 @@ def notes():
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
-            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            #TODO get this to work -> statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,%(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'time.strftime('%Y-%m-%d %H:%M:%S')': time.strftime('%Y-%m-%d %H:%M:%S'), 'note': note, 'random.randrange(1000000000, 9999999999)': random.randrange(1000000000, 9999999999)}
+            #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
+            #TODO get this to work -> 
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,:assocUser,:dateWritten,:note,:publicID);"""
             print(statement)
-            c.execute(statement)
+            c.execute(statement, {"""assocUser""": session['userid'], """dateWritten""": time.strftime('%Y-%m-%d %H:%M:%S'), """note""": note, """publicID""": random.randrange(1000000000, 9999999999)})
             db.commit()
             db.close()
         elif request.form['submit_button'] == 'import note':
@@ -86,14 +87,14 @@ def notes():
             db = connect_db()
             c = db.cursor()
             #statement = """SELECT * from NOTES where publicID = %s""" %noteid
-            statement = """SELECT * from NOTES where publicID = %(publicID)s""", {"noteid": noteid}
-            c.execute(statement)
+            statement = """SELECT * from NOTES where publicID = :id"""
+            c.execute(statement, {"""id""": noteid})
             result = c.fetchall()
             if(len(result)>0):
                 row = result[0]
-                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
-                ##TODO get this to work -> statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, %(assocUser)s,%(dateWritten)s,%(note)s,%(publicID)s);""", {'session['userid']': session['userid'], 'row[2]': row[2], 'row[3]': row[3], 'row[4]': row[4]}
-                c.execute(statement)
+                #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],row[2],row[3],row[4])
+                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null, :assocUser,:dateWritten,:note,:publicID);"""
+                c.execute(statement, {"""assocUser""": session['userid'], """dateWritten""": row[2], """note""": row[3], """publicID""": row[4]})
             else:
                 importerror="No such note with that ID!"
             db.commit()
@@ -148,24 +149,24 @@ def register():
         db = connect_db()
         c = db.cursor()
         #pass_statement = """SELECT * FROM users WHERE password = '%s';""" %password
-        pass_statement = """SELECT * FROM users WHERE password = %(password)s;""", {'password': password}
+        pass_statement = """SELECT * FROM users WHERE password = :password;"""
         #user_statement = """SELECT * FROM users WHERE username = '%s';""" %username
-        user_statement = """SELECT * FROM users WHERE username = %(username)s;""", {'username': username}
-        c.execute(pass_statement)
+        user_statement = """SELECT * FROM users WHERE username = :username;"""
+        c.execute(pass_statement, {'password': password})
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
 
-        c.execute(user_statement)
+        c.execute(user_statement, {'username': username})
         if(len(c.fetchall())>0):
             errored = True
             usererror = "That username is already in use by someone else!"
 
         if(not errored):
-            statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');""" %(username,password)
-            ##TODO get this to work -> statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
+            statement = """INSERT INTO users(id,username,password) VALUES(null, :username, :password);""" 
+            # statement = """INSERT INTO users(id,username,password) VALUES(null, %(username)s,%(password)s);"""{'username': username,'password': password}
             print(statement)
-            c.execute(statement)
+            c.execute(statement, {'username': username, 'password': password})
             db.commit()
             db.close()
             return f"""<html>
