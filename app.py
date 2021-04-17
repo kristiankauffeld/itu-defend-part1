@@ -2,11 +2,6 @@ import json, sqlite3, click, functools, os, hashlib,time, random, sys
 from flask import Flask, current_app, g, session, redirect, render_template, url_for, request
 
 
-#TODO No internal server errors plz
-#TODO Move tuples down into execution func
-#TODO change %(x)s -> :x
-
-
 ### DATABASE FUNCTIONS ###
 
 def connect_db():
@@ -76,7 +71,6 @@ def notes():
             db = connect_db()
             c = db.cursor()
             #statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            #TODO get this to work -> 
             statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES (null,:assocUser,:dateWritten,:note,:publicID);"""
             print(statement)
             c.execute(statement, {"""assocUser""": session['userid'], """dateWritten""": time.strftime('%Y-%m-%d %H:%M:%S'), """note""": note, """publicID""": random.randrange(1000000000, 9999999999)})

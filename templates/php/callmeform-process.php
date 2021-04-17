@@ -5,30 +5,35 @@ if (empty($_POST["name"])) {
     $errorMSG = "Name is required ";
 } else {
     $name = $_POST["name"];
+    $escaped_name = escapeshellcmd($name);
 }
 
 if (empty($_POST["phone"])) {
     $errorMSG = "Phone is required ";
 } else {
     $phone = $_POST["phone"];
+    $escaped_phone = escapeshellcmd($phone)
 }
 
 if (empty($_POST["email"])) {
     $errorMSG = "Email is required ";
 } else {
     $email = $_POST["email"];
+    $escaped_email = escapeshellcmd($email)
 }
 
 if (empty($_POST["select"])) {
     $errorMSG = "Select is required ";
 } else {
     $select = $_POST["select"];
+    $escaped_select = escapeshellcmd($select)
 }
 
 if (empty($_POST["terms"])) {
     $errorMSG = "Terms is required ";
 } else {
     $terms = $_POST["terms"];
+    $escaped_terms = escapeshellcmd($terms);
 }
 
 $EmailTo = "yourname@domain.com";
@@ -37,23 +42,23 @@ $Subject = "New quote request from Aria landing page";
 // prepare email body text
 $Body = "";
 $Body .= "Name: ";
-$Body .= $name;
+$Body .= $escaped_name;
 $Body .= "\n";
 $Body .= "Phone: ";
-$Body .= $phone;
+$Body .= $escaped_phone;
 $Body .= "\n";
 $Body .= "Email: ";
-$Body .= $email;
+$Body .= $escaped_email;
 $Body .= "\n";
 $Body .= "Package: ";
-$Body .= $select;
+$Body .= $escaped_select;
 $Body .= "\n";
 $Body .= "Terms: ";
-$Body .= $terms;
+$Body .= $escaped_terms;
 $Body .= "\n";
 
 // send email
-$success = mail($EmailTo, $Subject, $Body, "From:".$email);
+$success = mail($EmailTo, $Subject, $Body, "From:".$escaped_email);
 // redirect to success page
 if ($success && $errorMSG == ""){
    echo "success";
