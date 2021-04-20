@@ -189,13 +189,13 @@ if __name__ == "__main__":
     #create database if it doesn't exist yet
     if not os.path.exists(app.database):
         init_db()
-    runport = 5000
+    runport = 80
     if(len(sys.argv)==2):
         runport = sys.argv[1]
     try:
         app.run(host='0.0.0.0', port=runport) # runs on machine ip address to make it visible on netowrk
     except:
         print("Something went wrong. the usage of the server is either")
-        print("'python3 app.py' (to start on port 5000)")
+        print("'python3 app.py' (to start on port 80)")
         print("or")
         print("'sudo python3 app.py 80' (to run on any other port)")
